@@ -75,10 +75,14 @@ WSGI_APPLICATION = 'coffee_delivery.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Project modify SQL auto connect postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'betweendb',
+        'USER': 'rayng',
+        'PASSWORD': 'r987654321',
+        'HOST':'localhost'
     }
 }
 
