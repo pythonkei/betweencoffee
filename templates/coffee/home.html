@@ -1,0 +1,274 @@
+{% extends 'coffee/base.html'%}
+{% load static %}
+
+{% block title %}Between Cafe - Home{% endblock %}
+
+{% block content %}
+
+<!-- owl-carousel -->
+<section class="home-slider owl-carousel">
+    <div class="slider-item" style="background-image: url({% static 'images/bg_1.jpg' %});">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+                <div class="col-md-8 col-sm-12 text-center ftco-animate">
+                    <span class="subheading">Morning !!</span>
+                    <h1 class="mb-4">展開每天原動力</h1>
+                    <p class="mb-4 mb-md-5">生活或上班，<br>總是一杯好咖啡作伴</p>
+                    <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">立即落單</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slider-item" style="background-image: url({% static 'images/bg_2.jpg' %});">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+                <div class="col-md-8 col-sm-12 text-center ftco-animate">
+                    <span class="subheading">" Special "</span>
+                    <h1 class="mb-4">Between 首席配方咖啡豆</h1>
+                    <p class="mb-4 mb-md-5">以不同比例混合搭配而成，以創造出其獨特的風味特性</p>
+                    <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">我們的配方</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slider-item" style="background-image: url({% static 'images/bg_3.jpg' %});">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+                <div class="col-md-8 col-sm-12 text-center ftco-animate">
+                    <span class="subheading">Welcome ~</span>
+                    <h1 class="mb-4">啡咖師的日常</h1>
+                    <p class="mb-4 mb-md-5">不只是余韻，更是生命!</p>
+                    <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">了解更多</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end owl-carousel -->
+
+
+
+
+<!-- Quick order -->
+<section class="ftco-intro">
+    <div class="container-wrap">
+        <div class="wrap d-md-flex align-items-xl-end">
+            <div class="info" style="padding-top: 4vh; min-height: 164px;">
+                <div class="row no-gutters">
+                    <div class="col-md-3 d-flex ftco-animate">
+                        <div class="icon"><span class="icon-whatsapp"></span></div>
+                        <div class="text">
+                            <h3>2478 9522</h3>
+                            <p>Whatsapp</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5 d-flex ftco-animate">
+                        <div class="icon"><span class="icon-my_location"></span></div>
+                        <div class="text">
+                            <h3>觀塘偉業街243號地下</h3>
+                            <p style="height: 32px;">Google Map</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="icon"><span class="icon-clock-o"></span></div>
+                        <div class="text">
+                            <h3>每週 星期 1 - 5</h3>
+                            <p>7:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="book p-4">
+                <h3>快速落單 - 5分鐘早晨醒神配方 Morning Hand Drip</h3>
+                <form action="#" class="appointment-form-home">
+                    <div class="d-md-flex">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="名字">
+                        </div>
+                    </div>
+                    <div class="d-md-flex">
+                        <div class="form-group">
+                            <div class="input-wrap">
+                                <div class="icon"><span class="ion-md-clock"></span></div>
+                                <input type="text" class="form-control ui-timepicker-standard" placeholder="提取時間" id="time">
+                            </div>
+                        </div>
+
+                        <div class="form-group ml-md-4">
+                            <input type="text" class="form-control" placeholder="電話">
+                        </div>
+                    </div>
+                    <div class="d-md-flex">
+                        <div class="form-group">
+                  <textarea name="" id="" cols="30" rows="2" class="form-control" placeholder="備注"></textarea>
+                </div>
+                <div class="form-group ml-md-4">
+                <a href="cart.html">
+                  <input type="立即落單" value="立即落單" class="btn btn-white py-3 px-4">
+                </a>
+                </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Best Sell-->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section ftco-animate text-center">
+                <span class="subheading">Best Sell Coffee</span>
+                <h2 class="mb-4">最強人氣</h2>
+                <p>上班上到打恰睡 @@<br>來一杯極高評價醇厚咖啡立即充滿能量!</p>
+            </div>
+        </div>
+        <div class="row">
+            
+		<!-- List out product base on id calling -->
+        <div class="row ftco-animate">
+            {% for product in products %}
+            <div class="col-md-4">
+                <div class="menu-wrap">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="menu-img img">
+                    {% else %}
+                    <img src="https://via.placeholder.com/150" alt="No Image Available">
+                    {% endif %}
+                <div class="text text-center pt-4">
+                    <h3><a href="#">{{ product.name }}</a></h3>
+                    <p>{{ product.short_description }}</p>
+                    <p class="price"><span>${{ product.price }}</span></p>
+					<form action="{% url 'product_single' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-outline-primary">落單</button>
+                        </form> 
+                </div>
+            </div>
+            </div>
+            {% endfor %}
+    
+
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Shop message -->
+<section class="ftco-counter" id="section-counter" style="background-image: url({% static 'deco_01_v2.png' %}); background-repeat: no-repeat; background-size: cover;">
+    <div class="container">
+        <div class="row align-items-xl-end pr-md-5">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <span class="subheading">Between Say:</span>
+                        <div class="menu-entry playfair_deco" >
+                            <p class="lg_message">Caffeine energy boost that can help you get through your day !!!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div hidden class="container">
+            <div class="row align-items-xl-end">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-5">
+
+                      <div class=" d-flex counter-wrap ftco-animate">
+                        <div class="block-lg-text text-center">
+                          <div class="text">
+                              <strong class="number" data-number="78.6"></strong><span>%</span>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+
+                <div class="col-lg-4">
+                <div class="row">
+                    <div class=" d-flex  counter-wrap ftco-animate">
+                        <div class="text">
+                        <p>晨早的咖啡是一種天然興奮劑，有助於提高警覺性，減少疲勞，有此外還有助於排出體內的某些毒素，對78.6%人來說，是開啟新一天的日常儀式。</p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+          </div>
+    </div>
+</section>
+
+
+
+<!-- Coffee Bean-->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 col-md-6 pr-md-5">
+                <div class="heading-section text-md-right ftco-animate">
+                <span class="subheading">Between<br />Roastery</span>
+                <h2 class="mb-4">自家嚴選烘焙豆</h2>
+                <p class="mb-4">烘豆師精心調配烘製<br>烘焙曲線設計與控制的適切度與嚴謹</p>
+                <p><a href="#" class="btn btn-primary btn-outline-primary px-4 py-3">查看更多</a></p>
+                </div>
+            </div>
+            <!-- Bean photo -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="menu-entry">
+                            <a href="#" class="img" style="background-image: url({% static 'images/bean_01.png' %});"></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="menu-entry">
+                            <a href="#" class="img" style="background-image: url({% static 'images/bean_02.png' %});"></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="menu-entry">
+                            <a href="#" class="img" style="background-image: url({% static 'images/bean_03.png' %});"></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="menu-entry">
+                            <a href="#" class="img" style="background-image: url({% static 'images/bean_04.png' %});"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<script>
+	$(document).ready(function(){  
+		$('#time').timepicker({
+    		timeFormat: 'h:mm p',
+    		interval: 5,
+			minTime: '8',
+			maxTime: '6:00pm',
+			defaultTime: '8',
+			startTime: '08:00',
+			dynamic: false,
+			dropdown: true,
+			scrollbar: true
+		});
+	});  
+</script>
+
+
+{% endblock %}

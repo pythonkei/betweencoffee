@@ -1,0 +1,293 @@
+{% extends "coffee/base.html" %}
+{% load static %}
+
+{% block title %}Between Coffee - {{ product.name }}{% endblock %}
+
+
+
+
+
+
+<!-- subpageHeader-->
+<section class="ftco-section flexable-vh-20">
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+    <div class="col-lg-12 col-md-7 col-sm-12 text-center ftco-animate">
+      <h1 class="mb-3 mt-5 bread">購物車</h1>
+      <p class="breadcrumbs"><span class="mr-2"><a href="index.html">訂單</a></span> <span> | </span> </span><span> 購物車</span></p>
+    </div>
+    </div>
+</div>
+</section>
+<!-- subpageHeader-->
+
+
+    <!-- Order List -->
+
+		<section class="ftco-cart">
+			<div class="container">
+            <!-- Cart detail -->
+            {% for item in cart %}
+            {% with product=item.product %}
+            <!-- Product name -->
+            <div class="row justify-content-center">
+              <div class="col col-lg-6 col-md-6 mt-5 cart-wrap ftco-animate">
+                <div class="cart-list mb-5 text-center">
+                  <h3>{{ product.name }}</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product image -->
+            <div class="row justify-content-center">
+              <div class="col-md-12 ftco-animate">
+                  <div class="image-prod">
+                    <div class="menu-img img">
+                      <img src="{{ product.image.url }}" />
+                    </div>
+                  </div>
+              </div>
+              
+              <!-- Order Form detail -->
+
+              <div class="col-lg-12 ftco-animate">
+                <div class="cart-list col-lg-12">
+                  <table class="table">
+                    <thead class="thead-primary">
+                      <tr class="text-center">
+                        <th>&nbsp;</th>
+                        <th>提取時間</th>
+                        <th>喜好</th>
+                        <th>數量</th>
+                        <th>單價</th>
+                        <th>總價</th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody>
+                      <tr class="text-center">
+                        <td>
+                        <form id="product-remove" action="{% url 'cart:cart_remove' product.id %}" method="post">
+                          <input type="submit" value=""><span class="icon-close"></span>
+                          {% csrf_token %}
+                        </form>
+                      </td>
+                        
+                        
+                        <td class="pickup">
+                          <p>
+                            <span class="theme-color" style="font-weight: 500"
+                              >08:30 AM</span>
+                          </p>
+                        </td>
+
+                        <td class="product-name">
+                          <p>杯量: <span class="theme-color">中</span></p>
+                          <p>奶量: <span class="theme-color">正常</span></p>
+                        </td>
+                        
+                        <td class="quantity">
+                          <div class="input-group mb-3">
+                            <input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
+                          </div>
+
+                        <!-- 用表單提交資料, 更新購物車 -->
+                        <form id="form-quantity-picker" action="{% url 'cart:cart_add' product.id %}" method="post" class="">
+                          {{ item.update_quantity_form.quantity }}
+                          {{ item.update_quantity_form.override }}
+                          <input type="submit" value="更新" >
+                          {% csrf_token %}
+                        </form>
+                        </td>
+                        
+                        <td class="total">${{ item.price }}</td>
+                        <td class="total">${{ item.total_price }}</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+
+            </div>
+        {% endwith %} {% endfor %}
+			</div>
+		</section>
+
+
+    <section class="ftco-section ftco-cart">
+			<div class="container">
+    		<div class="row justify-content-end">
+          {% with total_item=cart|length %}
+          {% if total_item > 0 %}
+            <div class="col col-lg-6 col-md-6 cart-wrap ftco-animate">
+                <div class="cart-total">
+                    <h3 class="billing-heading mb-4">總計</h3>
+                    <p class="d-flex">
+                        <span style="text-align:left">優惠碼</span>
+                        <span style="text-align:right">不適用</span>
+                    </p>
+                    <p class="d-flex total-price">
+                        <span>數量 x {{ total_items }} {{ total_items|pluralize }}</span>
+                        <span class="total-amount" style="text-align:right">${{ cart.get_total_price }}</span>
+                        {% elif not order %}
+                        Empty 購物車.
+                    </p>
+                </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="cart-payment ftco-animate mt-4">
+          <h3 hidden class="billing-heading mb-4">付款方式</h3>
+          <div hidden class="form-group">
+            <div class="col-md-12">
+              <div class="radio">
+                  <label><input type="radio" name="optradio" class="mr-2"> Ailpay HK</label>
+              </div>
+            </div>
+          </div>
+  
+          <div hidden class="form-group">
+            <div class="col-md-12">
+              <div class="radio">
+                  <label><input type="radio" name="optradio" class="mr-2"> Payme</label>
+              </div>
+            </div>
+          </div>
+  
+          <div hidden class="form-group">
+            <div class="col-md-12">
+              <div class="radio">
+                  <label><input type="radio" name="optradio" class="mr-2"> FPS</label>
+              </div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <div class="col-md-12">
+              <p><a href="{% url 'orders:add_customer' %}" class="btn btn-primary py-3 px-4">確認</a></p>
+              <p>你的訂單將於結帳後開始制作, 謝謝!</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 pt-4">
+            <p class="text-right">
+                <a href="{% url 'betweencafe:products' %}" class="btn btn-primary py-3 px-4">返回</a><br>
+            </p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="flexable-vh-20">
+
+
+
+
+
+
+    
+    </div>
+    </div>
+    </div>
+    </section>
+    <!-- end Cart detail -->
+
+
+
+
+
+<!-- footer -->
+<footer class="ftco-footer ftco-section img" style="background-image: url('{% static 'images/footer_bg.jpg' %}');">
+    <div class="overlay"></div>
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-4 col-md-6 mb-5 mb-md-5">
+        <div class="ftco-footer-widget mb-4">
+          <h2 class="ftco-heading-2">Between Cafe</h2>
+          <p>Brewed in a Flash, Perfect to Go!</p>
+          <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+            <li class="ftco-animate"><a href="#"><span class="icon-whatsapp"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+          </ul>
+        </div>
+      </div>
+
+
+      <div class="col-lg-4 col-md-6 mb-5 mb-md-5">
+        <div class="ftco-footer-widget mb-4">
+          <h2 class="ftco-heading-2">啡咖師的日常</h2>
+          <div class="block-21 mb-4 d-flex">
+            <a class="blog-img mr-4" style="background-image: url('{% static 'images/blog_02.jpg' %}');"></a>
+            <div class="text">
+              <h3 class="heading"><a href="#">根據唱片是否適合搭配他的咖啡來挑選唱片</a></h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> Jan 03, 2025</a></div>
+                <div><a href="#"><span class="icon-person"></span> Ryan Roasters</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="block-21 mb-4 d-flex">
+            <a class="blog-img mr-4" style="background-image: url('{% static 'images/blog_01.jpg' %}');"></a>
+            <div class="text">
+              <h3 class="heading"><a href="#">發酵槽中進行 16 小時的乾燥發酵, 然後用大量的水清洗四次</a></h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> Jan 12, 2025</a></div>
+                <div><a href="#"><span class="icon-person"></span> Ryan Roasters</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div hidden class="col-lg-5 col-md-6 mb-5 mb-md-5">
+        <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">Find Us</h2>
+            <div class="block-23 mb-3">
+              <ul>
+                <li><span class="icon icon-map-marker"></span><span class="text">觀塘偉業街243號地下</span></li>
+                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+852 2478 9522</span></a></li>
+                <li><a href="#"><span class="icon icon-envelope"></span><span class="text">info@between.com</span></a></li>
+              </ul>
+            </div>
+        </div>
+      </div>
+
+    </div><!-- end row-->
+    <div class="row">
+      <div class="col-md-12">
+
+        <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with Kei group <i hidden class="icon-heart" aria-hidden="true"></i></p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- End footer -->
+  
+
+<!-- .js -->
+<script src={% static "js/jquery.min.js" %}></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src={% static "js/jquery-migrate-3.0.1.min.js" %}></script>
+<script src={% static "js/popper.min.js" %}></script>
+<script src={% static "js/bootstrap.min.js" %}></script>
+<script src={% static "js/jquery.easing.1.3.js" %}></script>
+<script src={% static "js/jquery.waypoints.min.js" %}></script>
+<script src={% static "js/jquery.stellar.min.js" %}></script>
+<script src={% static "js/owl.carousel.min.js" %}></script>
+<script src={% static "js/jquery.magnific-popup.min.js" %}></script>
+<script src={% static "js/aos.js" %}></script>
+<script src={% static "js/jquery.animateNumber.min.js" %}></script>
+<script src={% static "js/bootstrap-datepicker.js" %}></script>
+
+<script src={% static "js/scrollax.min.js" %}></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src={% static "js/google-map.js" %}></script>
+<script src={% static "js/main.js" %}></script>
+
+
+
+    </body>
+</html>

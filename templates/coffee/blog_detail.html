@@ -1,0 +1,85 @@
+{% extends "coffee/base.html" %}
+{% load static %}
+
+{% block title %}Between Coffee - {{ post.title }}{% endblock %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-8 heading-section text-center ftco-animate">
+                <h1 class="mb-4">{{ post.title }}</h1>
+                <div class="meta mb-4">
+                    <span class="mr-3">{{ post.created_at|date:"Y年m月d日" }}</span>
+                    <span>作者: {{ post.author.username }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 ftco-animate">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid mb-4">
+                {% endif %}
+                
+                <div class="post-content">
+                    {{ post.content|linebreaks }}
+                </div>
+            </div>
+            
+            <div class="col-md-4 sidebar ftco-animate">
+                <div class="sidebar-box">
+                    <h3 class="heading">關於作者</h3>
+                    <p>{{ post.author.profile.bio|default:"這位作者還沒有留下個人介紹" }}</p>
+                </div>
+                
+                <div class="sidebar-box">
+                    <h3 class="heading">最新文章</h3>
+                    {% for recent_post in recent_posts %}
+                    <div class="block-21 mb-4 d-flex">
+                        <a class="blog-img mr-4" 
+                           style="background-image: url({% if recent_post.image %}{{ recent_post.image.url }}{% else %}{% static 'images/blog_01.jpg' %}{% endif %});"></a>
+                        <div class="text">
+                            <h3 class="heading"><a href="{% url 'blog_detail' recent_post.slug %}">{{ recent_post.title }}</a></h3>
+                            <div class="meta">
+                                <div><a href="#"><span class="icon-calendar"></span> {{ recent_post.created_at|date:"Y年m月d日" }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="sidebar-box">
+                    <h3 class="heading">相關文章</h3>
+                    {% for related_post in related_posts %}
+                    <div class="block-21 mb-4 d-flex">
+                        <a class="blog-img mr-4" 
+                           style="background-image: url({% if related_post.image %}{{ related_post.image.url }}{% else %}{% static 'images/blog_01.jpg' %}{% endif %});"></a>
+                        <div class="text">
+                            <h3 class="heading"><a href="{% url 'blog_detail' related_post.slug %}">{{ related_post.title }}</a></h3>
+                            <div class="meta">
+                                <div><a href="#"><span class="icon-calendar"></span> {{ related_post.created_at|date:"Y年m月d日" }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>目前沒有相關文章</p>
+                    {% endfor %}
+                </div>
+
+                <div class="sidebar-box">
+                    <h3 class="heading">分享文章</h3>
+                    <div class="social-share">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                           target="_blank" class="facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.build_absolute_uri }}" 
+                           target="_blank" class="twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="https://lineit.line.me/share/ui?url={{ request.build_absolute_uri }}" 
+                           target="_blank" class="line"><i class="fab fa-line"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

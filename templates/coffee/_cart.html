@@ -1,0 +1,220 @@
+{% extends 'coffee/base.html' %}
+{% load static %}
+
+{% block title %}Between Coffee - 購物車{% endblock %}
+
+{% block content %}
+
+<!-- subpageHeader-->
+<section class="ftco-section flexable-vh-20">
+    <div class="container">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-lg-12 col-md-7 col-sm-12 text-center">
+              <h1 class="mb-3 mt-5 bread">你的訂單</h1>
+              <p class="breadcrumbs"><span class="mr-2"><a href="index.html">訂單</a></span> <span> | </span> </span><span> 購物車</span></p>
+            </div>
+          </div>
+    </div>
+</section>
+<!-- end subpageHeader-->
+
+
+
+<section class="ftco-section ftco-cart" style="padding-top: 6vh;">
+
+    <div class="container">
+        {% if cart_items %}
+        <div class="row justify-content-center">
+
+            <div class="col col-lg-12 col-md-12 mt-5 cart-wrap">
+                {% for item in cart_items %}
+                <div class="cart-list text-center">
+
+                    <h3>{{ item.product.name }}</h3>
+                    <div class="image-prod">
+                        <img src="{{ item.product.image.url }}" class="img" alt="{{ product.name }}"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                        <tbody>
+                            <thead class="thead-primary" >
+                                <tr class="text-center">
+                                    <!-- field -->
+                                    <th hidden >提取時間</th>
+                                    <th>喜好</th>
+                                    <th>數量</th>
+                                    <th>價格</th>
+                                </tr>
+                            </thead>
+            
+                            <tr class="text-center">
+                                <td hidden class="pickup">
+                                    <p><span class="theme-color" style="font-weight: 500;">08:30 AM</span></p>
+                                </td>
+            
+                                <td class="product-name">
+                                    <p>杯量: <span class="theme-color">中</span></p>
+                                    <p>奶量: <span class="theme-color">正常</span></p>
+                                </td>
+                                
+                                <td>
+                                    <input type="number" 
+                                        class=" quantity-input" 
+                                        value="{{ item.quantity }}" 
+                                        min="1" 
+                                        data-product-id="{{ item.product.id }}">
+                                </td>
+            
+                                <td class="total">${{ item.product.price }}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-outline-primary btn-md" 
+                                    data-product-id="{{ item.product.id }}"><span class="icon-close"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+
+                        </tbody>
+                        </table>
+                        <!-- End Order item -->
+                        {% endfor %}
+                        <div class="flexable-vh-5"></div>
+
+                    </div>
+            
+                        {% else %}
+                        <div class="alert alert-info">
+                            您的購物車是空的
+                        </div>
+                        <a href="{% url 'product_list' %}" class="btn btn-primary">
+                            開始購物
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+<div class="container">
+    <div class="row justify-content-end align-items-center">
+        <div class="col-md-6 text-right mt-4">
+            <div class="cart-total mb-3">
+                <h3 class="billing-heading mb-4">總計</h3>
+                <p class="d-flex">
+                    <span>優惠碼</span>
+                    <span>不適用</span>
+                </p>
+                <p class="d-flex total-price">
+                    <span>總數</span>
+                    <span class="total-amount">${{ cart_total }}</span>
+                </p>
+            </div>
+            <div class="mt-3">
+                <a href="{% url 'checkout' %}" class="btn btn-primary calltoaction-btn">前往結帳</a>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'product_list' %}" class="btn btn-primary btn-outline-primary calltoaction-btn">繼續購物</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-md-6">
+
+
+
+
+
+
+
+
+</div>
+</div>
+</div>
+</section>
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+    // Handle quantity changes
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', async function() {
+            const productId = this.dataset.productId;
+            const quantity = this.value;
+
+            try {
+                const response = await fetch('{% url "update_cart" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: quantity
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('更新購物車失敗');
+                }
+
+                location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('更新購物車失敗，請稍後再試');
+            }
+        });
+    });
+
+    // Handle item removal
+    document.querySelectorAll('.remove-item').forEach(button => {
+        button.addEventListener('click', async function() {
+            const productId = this.dataset.productId;
+
+            if (!confirm('確定要移除這個商品嗎？')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('{% url "remove_from_cart" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        product_id: productId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('移除商品失敗');
+                }
+
+                location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('移除商品失敗，請稍後再試');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

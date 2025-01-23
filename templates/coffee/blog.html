@@ -1,0 +1,66 @@
+{% extends "coffee/base.html" %}
+{% load static %}
+
+{% block title %}Between Coffee - Blog{% endblock %}
+
+{% block content %}
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="mb-4">咖啡日誌</h2>
+                <p>記錄我們與咖啡的點點滴滴</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-md-4 ftco-animate">
+                <div class="blog-entry">
+                    <a href="{% url 'blog_detail' post.slug %}" class="block-20" 
+                       style="background-image: url({% if post.image %}{{ post.image.url }}{% else %}{% static 'images/blog_01.jpg' %}{% endif %});">
+                    </a>
+                    <div class="text p-4 d-block">
+                        <div class="meta mb-3">
+                            <div><a href="#">{{ post.created_at|date:"Y年m月d日" }}</a></div>
+                            <div><a href="#">{{ post.author.username }}</a></div>
+                        </div>
+                        <h3 class="heading"><a href="{% url 'blog_detail' post.slug %}">{{ post.title }}</a></h3>
+                        <p>{{ post.excerpt|default:post.content|truncatechars:100 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>目前沒有文章</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <div class="row mt-5">
+            <div class="col text-center">
+                <div class="block-27">
+                    <ul>
+                        {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}"><</a></li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="active"><span>{{ num }}</span></li>
+                            {% else %}
+                            <li><a href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

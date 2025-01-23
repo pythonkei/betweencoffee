@@ -1,0 +1,163 @@
+{% extends 'coffee/base.html' %}
+{% load static %}
+
+{% block title %}Between Coffee - Payment 付款{% endblock %}
+
+{% block extra_head %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- subpageHeader-->
+<section class="ftco-section flexable-vh-20">
+    <div class="container">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-lg-12 col-md-7 col-sm-12 text-center">
+              <h1 class="mb-3 mt-5 bread">付款</h1>
+              <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'cart' %}">訂單</a></span> <span> | </span> </span><span> 付款詳情</span></p>
+            </div>
+          </div>
+    </div>
+</section>
+<!-- end subpageHeader-->
+
+
+
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center align-items-center ftco-animate">
+
+            <div class="col-xl-9">
+                <div class="row justify-content-center align-items-center">
+                    <div class=" col-md-8 col-sm-12">
+
+                        <div class="book p-4">
+                            <form id="checkout-form" class="appointment-form">
+                                <p style="color:#fff; font-size:18px;">聯絡信息 :</p>
+                                {% csrf_token %}
+                                <div class="d-md-flex"> <!-- id=name -->
+                                    <div class="form-group">
+                                        <input id="name" required class="form-control-white" placeholder="名字">
+                                    </div>
+                                </div>
+
+                                <div class="d-md-flex"> <!-- id=phone -->
+                                    <div class="form-group">
+                                        <input id="phone" required class="form-control-white" placeholder="電話">
+                                        <p class="mt-2">完成後將會Whatsapp 或 SMS 通知</p>
+                                    </div>
+                                </div>
+
+
+                                    <div class=" d-md-flex"> <!-- id=pickup -->
+                                        <div class="form-group">
+                                        <p style="color:#fff; font-size:18px;">提取時間 :</p>
+                                        <div class="select-wrap">
+                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                            <select name="pickup" id="pickup" required class="form-control">
+                                                <option value="">請選擇</option>
+                                                <option value="">即時</option>
+                                                <option value="">3分鐘後</option>
+                                                <option value="">5分鐘後</option>
+                                                <option value="">10分鐘後</option>
+                                            </select>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flexable-vh-10"></div>
+
+                                    <div class=" d-md-flex">
+                                        <div class="form-group">
+                                        <p style="color:#fff; font-size:18px;">支付方式 :</p>
+                                        <div class="select-wrap">
+                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                            <select name="" id="" class="form-control">
+                                                <option value="">請選擇</option>
+                                                <option value="">Alipay HK</option>
+                                                <option value="">Payme</option>
+                                                <option value="">FPS</option>
+                                            </select>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mt-4 m">
+                                    <p class="h4 text-right">總計</p>
+                                    <p class="h2 text-right total-amount mb-4">${{ cart_total }}</p>
+                                    <button type="submit" class="btn btn-primary btn-block">付款</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="flexable-vh5"></div>
+
+                    <div class="col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <div class="col-md-12">
+
+                            </div>
+                            <div style="visibility: hidden;">
+                                {% for item in cart_items %}
+                                    <p>{{ item.name }}</p>
+                                    <p>{{ item.quantity }}</p>
+                                    <p>${{ item.price }}</p>
+                                    <p>${{ item.total_price }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<script>
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            pickup: document.getElementById('pickup').value,
+            cart_total: {{ cart_total }},
+            cart_items: {{ cart_items|safe }}
+        };
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('{% url "checkout" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Redirect to fake payment page
+            window.location.href = '{% url "fake_payment" %}';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Redirect to fake payment even if error occurs
+            window.location.href = '{% url "fake_payment" %}';
+        });
+    });
+</script>
+
+
+{% endblock %}
